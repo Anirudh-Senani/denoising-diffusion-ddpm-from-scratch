@@ -110,8 +110,33 @@ def timestep_embedding(t, dim: int):
     out[:, half:] = torch.cos(rads)
     return out
 
-# Step 10 - init_tiny_unet (not yet solved)
-# TODO: implement
+# Step 10 - init_tiny_unet
+import torch
+import torch.nn.functional as F
+
+def init_tiny_unet(in_ch: int = 1, hidden: int = 16, time_dim: int = 16, seed: int = 0) -> dict:
+    # TODO: initialize tiny residual denoiser parameters
+    torch.manual_seed(seed)
+    std = 0.02
+    conv_in_w = torch.normal(mean=0, std=std, size=(hidden, in_ch, 3, 3), requires_grad=True)
+    conv_in_b = torch.zeros(hidden, requires_grad=True)
+    time_mlp_w = torch.normal(mean=0, std=std, size=(hidden, time_dim), requires_grad=True)
+    time_mlp_b = torch.zeros(hidden, requires_grad=True)
+    conv_mid_w = torch.normal(mean=0, std=std, size=(hidden, hidden, 3, 3), requires_grad=True)
+    conv_mid_b = torch.zeros(hidden, requires_grad=True)
+    conv_out_w = torch.normal(mean=0, std=std, size=(in_ch, hidden, 3, 3), requires_grad=True)
+    conv_out_b = torch.zeros(in_ch, requires_grad=True)
+
+    return dict(
+        conv_in_w=conv_in_w,
+        conv_in_b=conv_in_b,
+        time_mlp_w=time_mlp_w,
+        time_mlp_b=time_mlp_b,
+        conv_mid_w=conv_mid_w,
+        conv_mid_b=conv_mid_b,
+        conv_out_w=conv_out_w,
+        conv_out_b=conv_out_b
+    )
 
 # Step 11 - tiny_unet_forward (not yet solved)
 # TODO: implement
