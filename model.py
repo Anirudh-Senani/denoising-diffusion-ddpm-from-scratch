@@ -233,11 +233,11 @@ def ddpm_p_mean_variance(x_t, t, eps, schedule: dict):
     x0_hat = torch.clamp(x0_hat, -1, 1)
     beta_t = extract_into_batch(schedule['betas'], t, x0_hat)
     sqrt_alpha_bar_t_1 = extract_into_batch(schedule['sqrt_alphas_cumprod'], t-1, x0_hat)
-    one_minus_alpha_bar_t = extract_into_batch(1.0-schedule['alphas_cumprod'], t, x0_hat)
-    sqrt_alpha_bar_t = extract_into_batch(schedule['sqrt_alphas_cumprod'], t, x0_hat)
-    one_minus_alpha_bar_t_1 = extract_into_batch(1.0-schedule['alphas_cumprod'], t-1, x0_hat)
+    one_minus_alpha_bar_t = 1.0 - extract_into_batch(schedule['alphas_cumprod'], t, x0_hat)
+    sqrt_alpha_t = extract_into_batch(schedule['alphas'], t, x0_hat)
+    one_minus_alpha_bar_t_1 = 1.0 - extract_into_batch(schedule['alphas_cumprod'], t-1, x0_hat)
 
-    mu = (sqrt_alpha_bar_t_1 * beta_t/one_minus_alpha_bar_t) * x0_hat + (sqrt_alpha_bar_t * one_minus_alpha_bar_t_1/one_minus_alpha_bar_t)*x_t
+    mu = (sqrt_alpha_bar_t_1 * beta_t/one_minus_alpha_bar_t) * x0_hat + (sqrt_alpha_t * one_minus_alpha_bar_t_1/one_minus_alpha_bar_t)*x_t
     sigma = beta_t
 
     return mu, sigma, x0_hat
