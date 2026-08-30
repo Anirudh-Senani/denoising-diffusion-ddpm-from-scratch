@@ -36,7 +36,7 @@ import torch.nn.functional as F
 
 def extract_into_batch(a, t, x):
     # TODO: gather a[t] and reshape to (B, 1, 1, 1) for broadcasting with x
-    at = a[t]
+    at = torch.where(t<0, 1.0, a[t])
     return at[:, None, None, None]
 
 # Step 5 - q_sample
