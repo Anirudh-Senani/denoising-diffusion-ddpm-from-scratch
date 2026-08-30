@@ -257,8 +257,20 @@ def ddpm_p_sample(x_t, t, params: dict, schedule: dict, noise=None):
 
     return mean + torch.sqrt(var) * noise
 
-# Step 18 - ddpm_sample_loop (not yet solved)
-# TODO: implement
+# Step 18 - ddpm_sample_loop
+import torch
+import torch.nn.functional as F
+
+def ddpm_sample_loop(params: dict, schedule: dict, shape: tuple, seed: int = 0):
+    # TODO: ancestral sampling from pure noise to x0
+    torch.manual_seed(seed)
+
+    x = torch.randn(shape)
+    for ti in reversed(range(schedule['T'])):
+        t = torch.full((shape[0],), ti)
+        x = ddpm_p_sample(x, t, params, schedule)
+    
+    return x
 
 # Step 19 - sample_quality_mse (not yet solved)
 # TODO: implement
